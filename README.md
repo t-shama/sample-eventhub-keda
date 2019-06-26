@@ -43,12 +43,7 @@ This sample goes through the basics of creating an Azure Function that triggers 
   
  **6. Getting connection strings for Event Hub and Storage Accounts**
  
-  To get the connection string of your Event Hub, go to your Event Hub namespace in the Azure Portal, click on `Shared access policies` under Settings. From there, click on `RootManageSharedAccessKey` and copy the value under `Connection string--primary key`. Before setting this value to the side, add `EntityPath=sample-eventhub` at the end, or `EntithPath=<your-event-hub-name>.
-  
-  
-  
-  
-  if you chose a different name for your Event Hub. Your Event Hub connection string should look like this now:
+  To [get the connection string of your Event Hub](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-get-connection-string), go to your Event Hub namespace in the Azure Portal, click on `Shared access policies` under Settings. From there, click on `RootManageSharedAccessKey` and copy the value under `Connection string--primary key`. Before setting this value to the side, add `EntityPath=sample-eventhub` at the end, or `EntityPath=<your-event-hub-name>` if you chose a different name for your Event Hub. Your Event Hub connection string should look like this now:
   ```
 Endpoint=sb://<your-eventhub-namespace>.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=secretKey123;EntityPath=sample-eventhub
   ```
@@ -115,3 +110,20 @@ Endpoint=sb://<your-eventhub-namespace>.servicebus.windows.net/;SharedAccessKeyN
  ```
  
  **9. Debug and test the function locally (optional)**
+  <will insert more later on>
+
+**10. Install KEDA**
+```
+func kubernetes install --namespace keda
+```
+
+To confirm that KEDA has successfully installed you can run the following command and should see the following CRD.
+```
+kubectl get customresourcedefinition
+NAME                        AGE
+scaledobjects.keda.k8s.io   2h 
+```
+
+**11a. Deploy Function app to KEDA (standard)**
+
+**11b. Deploy Function app to KEDA (Virtual Nodes)**
