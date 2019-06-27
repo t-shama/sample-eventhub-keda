@@ -33,17 +33,31 @@ This sample goes through the basics of creating an Azure Function that triggers 
  
   Go to Event Hubs in the [Azure Portal]() and click on new. Fill in a name for your Event Hub namespace, your Azure subscription, your resource group, and which location you'd like your Event Hub to be deployed to. Click `Create` and wait for your Event Hub to be deployed. 
   
+  ![Where to create event hub namespace in portal](/docs/CreateNamespace.png)
+  ![Creating event hub namespace from portal](/docs/CreateNamespace2.png)
+  
   Once deployed, go to your new namespace and click on `+ Event Hub` to create a new Event Hub. Write "sample-eventhub" under name and click `Create`. 
+  
+  ![Where to create an event hub in portal](/docs/CreateEventHub.png)
+  ![Creating an event hub in portal](/docs/CreateEventHub2.PNG)
   
  **5. Create an Azure Storage Account**
  
   Functions is built on top of an __event processor host (EPH)__, an intelligent consumer agent that simplifies the management of checkpointing, leasing, and parallel event readers. To use the EPH, you must have an Azure Storage Account set up to store checkpointing and leasing information. As of now, the Event Hub scaler **only** supports reading from Blob Storage.
   
-  Click `+ Add` in Storage accounts. Fill in the same subscription and resource group that you used before, and choose a storage account name and a location. Everything else can be left as their default values. Click `Review + Create` and then `Create` again. 
+  Click `+ Add` in Storage accounts. Fill in the same subscription and resource group that you used before, and choose a storage account name and a location. Everything else can be left as their default values. Click `Review + Create` and then `Create` again.
+  
+  ![Where to create a storage account in portal](/docs/CreateStorage.PNG)
+  
+  ![Creating a storage account in portal](/docs/CreateStorage2.PNG)
   
  **6. Getting connection strings for Event Hub and Storage Accounts**
  
-  To [get the connection string of your Event Hub](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-get-connection-string), go to your Event Hub namespace in the Azure Portal, click on `Shared access policies` under Settings. From there, click on `RootManageSharedAccessKey` and copy the value under `Connection string--primary key`. Before setting this value to the side, add `EntityPath=sample-eventhub` at the end, or `EntityPath=<your-event-hub-name>` if you chose a different name for your Event Hub. Your Event Hub connection string should look like this now:
+  To [get the connection string of your Event Hub](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-get-connection-string), go to your Event Hub namespace in the Azure Portal, click on `Shared access policies` under Settings. From there, click on `RootManageSharedAccessKey` and copy the value under `Connection string--primary key`. 
+  
+  ![Getting event hub connection string from portal](docs/GetEventHubConnectionString.PNG)
+  
+ Before setting this value to the side, add `EntityPath=sample-eventhub` at the end, or `EntityPath=<your-event-hub-name>` if you chose a different name for your Event Hub. Your Event Hub connection string should look like this now:
   ```
 Endpoint=sb://<your-eventhub-namespace>.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=secretKey123;EntityPath=sample-eventhub
   ```
@@ -180,7 +194,7 @@ The events sent to the Event Hub will be consumed. You can validate your Functio
 
 ## Cleaning Up Resources
 
-** Delete the function deployment **
+**Delete the function deployment**
 ```
 kubectl delete -f deploy.yaml
 ```
