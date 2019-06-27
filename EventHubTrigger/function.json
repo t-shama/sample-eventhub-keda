@@ -4,8 +4,10 @@
       "type": "eventHubTrigger",
       "name": "eventHubMessages",
       "direction": "in",
-      "eventHubName": "samples-workitems",
-      "connection": "",
+      "eventHubName": "sample-eventhub",
+      "connection": "EventHub",
+      "storageConnection": "AzureWebJobsStorage",
+      "dataType": "string",
       "cardinality": "many",
       "consumerGroup": "$Default"
     }
