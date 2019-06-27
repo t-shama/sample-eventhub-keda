@@ -178,7 +178,7 @@ kubectl apply -f deploy.yaml
 
 **12. Send messages to your event hub and validate the function app scales with KEDA**
 
-Initially after deploy and with an eventhub with 0 unprocessed messges, you should see 0 pods.
+Initially after deploy and with an eventhub with 0 unprocessed messages, you should see 0 pods.
 ```
 kubectl get deploy
 ```
