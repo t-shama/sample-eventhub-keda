@@ -43,12 +43,7 @@ This sample goes through the basics of creating an Azure Function that triggers 
   
  **6. Getting connection strings for Event Hub and Storage Accounts**
  
-  To get the connection string of your Event Hub, go to your Event Hub namespace in the Azure Portal, click on `Shared access policies` under Settings. From there, click on `RootManageSharedAccessKey` and copy the value under `Connection string--primary key`. Before setting this value to the side, add `EntityPath=sample-eventhub` at the end, or `EntithPath=<your-event-hub-name>.
-  
-  
-  
-  
-  if you chose a different name for your Event Hub. Your Event Hub connection string should look like this now:
+  To [get the connection string of your Event Hub](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-get-connection-string), go to your Event Hub namespace in the Azure Portal, click on `Shared access policies` under Settings. From there, click on `RootManageSharedAccessKey` and copy the value under `Connection string--primary key`. Before setting this value to the side, add `EntityPath=sample-eventhub` at the end, or `EntityPath=<your-event-hub-name>` if you chose a different name for your Event Hub. Your Event Hub connection string should look like this now:
   ```
 Endpoint=sb://<your-eventhub-namespace>.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=secretKey123;EntityPath=sample-eventhub
   ```
@@ -115,3 +110,82 @@ Endpoint=sb://<your-eventhub-namespace>.servicebus.windows.net/;SharedAccessKeyN
  ```
  
  **9. Debug and test the function locally (optional)**
+  <will insert more later on>
+
+**10. Install KEDA**
+```
+func kubernetes install --namespace keda
+```
+
+To confirm that KEDA has successfully installed you can run the following command and should see the following CRD.
+```
+kubectl get customresourcedefinition
+NAME                        AGE
+scaledobjects.keda.k8s.io   2h 
+```
+
+**11a. Deploy Function app to KEDA (standard)**
+You can then deploy your function to Kubernetes. If you want to deploy so that the function may run on Virtual Nodes, [follow 9b](). 
+```
+func kubernetes deploy --name sample-eventhub --registry <docker-user-id>
+```
+
+**11b. Deploy Function app to KEDA (Virtual Nodes)**
+
+To deploy your function Kubernetes with Azure Virtual Nodes, you need to modify the details of the deployment to allow the selection of virtual nodes.
+
+Generate a deployment yaml for the function.
+```
+func kubernetes deploy --name sample-eventhub --registry <docker-user-id> --javascript --dry-run > deploy.yaml
+```
+
+Open the created `deploy.yaml`. To tolerate scheduling onto any nodes, including virtual, modify the deployment in the file.
+```yaml
+    spec:
+      containers:
+      - name: sample-eventhub
+        image: <your-docker-user-id>/sample-eventhub
+        env:
+        - name: AzureFunctionsJobHost__functions__0
+          value: EventHubTrigger
+        envFrom:
+        - secretRef:
+            name: sample-eventhub
+```
+
+Build and deploy the container image, and apply the deployment to your cluster.
+
+```
+docker build -t <your-docker-user-id>/sample-eventhub .
+docker push <your-docker-user-id>/sample-eventhub
+
+kubectl apply -f deploy.yaml
+```
+
+**12. Send messages to your event hub and validate the function app scales with KEDA**
+
+Initially after deploy and with an eventhub with 0 unprocessed messges, you should see 0 pods.
+```
+kubectl get deploy
+```
+
+Send messages to the EventHub. KEDA will detect the event and add a pod. By default the polling interval set is 30 seconds on the `ScaledObject` resource, so it may take up to 30 seconds for the events to be detected and activate your function. This can be [adjusted on the `ScaledObject` resource](https://github.com/kedacore/keda/wiki/ScaledObject-spec).
+
+```
+kubectl get pods -w
+```
+
+The events sent to the Event Hub will be consumed. You can validate your Functions app consumed these events by using `kubectl logs <pod-name>`. If enough events are sent to the function then KEDA will autoscale. After all events are consumed and the cooldown period has elapsed (default 300 seconds), the last pod should scale back down to zero.
+
+
+## Cleaning Up Resources
+
+** Delete the function deployment **
+```
+kubectl delete -f deploy.yaml
+```
+
+**Uninstall KEDA**
+```
+func kubernetes remove --namespace keda
+```
