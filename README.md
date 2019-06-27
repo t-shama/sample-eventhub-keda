@@ -125,5 +125,67 @@ scaledobjects.keda.k8s.io   2h
 ```
 
 **11a. Deploy Function app to KEDA (standard)**
+You can then deploy your function to Kubernetes. If you want to deploy so that the function may run on Virtual Nodes, [follow 9b](). 
+```
+func kubernetes deploy --name sample-eventhub --registry <docker-user-id>
+```
 
 **11b. Deploy Function app to KEDA (Virtual Nodes)**
+
+To deploy your function Kubernetes with Azure Virtual Nodes, you need to modify the details of the deployment to allow the selection of virtual nodes.
+
+Generate a deployment yaml for the function.
+```
+func kubernetes deploy --name sample-eventhub --registry <docker-user-id> --javascript --dry-run > deploy.yaml
+```
+
+Open the created `deploy.yaml`. To tolerate scheduling onto any nodes, including virtual, modify the deployment in the file.
+```yaml
+    spec:
+      containers:
+      - name: sample-eventhub
+        image: <your-docker-user-id>/sample-eventhub
+        env:
+        - name: AzureFunctionsJobHost__functions__0
+          value: EventHubTrigger
+        envFrom:
+        - secretRef:
+            name: sample-eventhub
+```
+
+Build and deploy the container image, and apply the deployment to your cluster.
+
+```
+docker build -t <your-docker-user-id>/sample-eventhub .
+docker push <your-docker-user-id>/sample-eventhub
+
+kubectl apply -f deploy.yaml
+```
+
+**12. Send messages to your event hub and validate the function app scales with KEDA**
+
+Initially after deploy and with an eventhub with 0 unprocessed messges, you should see 0 pods.
+```
+kubectl get deploy
+```
+
+Send messages to the EventHub. KEDA will detect the event and add a pod. By default the polling interval set is 30 seconds on the `ScaledObject` resource, so it may take up to 30 seconds for the events to be detected and activate your function. This can be [adjusted on the `ScaledObject` resource](https://github.com/kedacore/keda/wiki/ScaledObject-spec).
+
+```
+kubectl get pods -w
+```
+
+The events sent to the Event Hub will be consumed. You can validate your Functions app consumed these events by using `kubectl logs <pod-name>`. If enough events are sent to the function then KEDA will autoscale. After all events are consumed and the cooldown period has elapsed (default 300 seconds), the last pod should scale back down to zero.
+
+
+## Cleaning Up Resources
+
+** Delete the function deployment **
+```
+kubectl delete -f deploy.yaml
+```
+
+**Uninstall KEDA**
+```
+func kubernetes remove --namespace keda
+```
