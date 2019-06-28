@@ -125,7 +125,7 @@ Endpoint=sb://<your-eventhub-namespace>.servicebus.windows.net/;SharedAccessKeyN
  ```
  
  **9. Debug and test the function locally (optional)**
-  <will insert more later on>
+  will insert more later on>
 
 **10. Install KEDA**
 ```
@@ -140,12 +140,12 @@ scaledobjects.keda.k8s.io   2h
 ```
 
 **11a. Deploy Function app to KEDA (standard)**
-You can then deploy your function to Kubernetes. If you want to deploy so that the function may run on Virtual Nodes, [follow 9b](). 
+You can then deploy your function to Kubernetes. If you want to deploy so that the function may run on Virtual Nodes, [follow 11b](#deploy-virtual-nodes). 
 ```
 func kubernetes deploy --name sample-eventhub --registry <docker-user-id>
 ```
 
-**11b. Deploy Function app to KEDA (Virtual Nodes)**
+**[11b. Deploy Function app to KEDA (Virtual Nodes)](#deploy-virtual-nodes)**
 
 To deploy your function Kubernetes with Azure Virtual Nodes, you need to modify the details of the deployment to allow the selection of virtual nodes.
 
@@ -179,18 +179,20 @@ kubectl apply -f deploy.yaml
 
 **12. Send messages to your event hub and validate the function app scales with KEDA**
 
-Initially after deploy and with an eventhub with 0 unprocessed messages, you should see 0 pods.
+To check if your deployment was successful, run `kubectl get deploy`. You should see the following: 
+
 ```
-kubectl get deploy
+NAME              DESIRED   CURRENT   UP-TO-DATE   AVAILABLE   
+sample-eventhub   0         0         0            0          
 ```
 
-Send messages to the EventHub. KEDA will detect the event and add a pod. By default the polling interval set is 30 seconds on the `ScaledObject` resource, so it may take up to 30 seconds for the events to be detected and activate your function. This can be [adjusted on the `ScaledObject` resource](https://github.com/kedacore/keda/wiki/ScaledObject-spec).
+Initially after deploy and with an eventhub with 0 unprocessed messages, you should see 0 pods. When you send messages to the EventHub, KEDA will detect the events and add a pod. By default the polling interval set is 30 seconds on the `ScaledObject` resource, so it may take up to 30 seconds for the events to be detected and activate your function. This can be [adjusted on the `ScaledObject` resource](https://github.com/kedacore/keda/wiki/ScaledObject-spec). To check whether or not you have pods, run the following:
 
 ```
 kubectl get pods -w
 ```
 
-The events sent to the Event Hub will be consumed. You can validate your Functions app consumed these events by using `kubectl logs <pod-name>`. If enough events are sent to the function then KEDA will autoscale. After all events are consumed and the cooldown period has elapsed (default 300 seconds), the last pod should scale back down to zero.
+The events sent to the Event Hub will be consumed by your Functions app running in the Kubernetes pods. You can validate your Functions app consumed these events by using `kubectl logs <pod-name>`. If enough events are sent to the function then KEDA will autoscale. After all events are consumed and the cooldown period has elapsed (default 300 seconds), the last pod should scale back down to zero.
 
 
 ## Cleaning Up Resources
