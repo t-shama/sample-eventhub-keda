@@ -203,12 +203,19 @@ The events sent to the Event Hub will be consumed by your Functions app running 
 
 ## Cleaning Up Resources
 
-**Delete the function deployment**
+### Delete the function deployment (standard)
+```
+kubectl delete deploy sample-eventhub
+kubectl delete ScaledObject sample-eventhub
+kubectl delete Secret sample-eventhub
+```
+
+### Delete the function deployment on Virtual Nodes
 ```
 kubectl delete -f deploy.yaml
 ```
 
-**Uninstall KEDA**
+### Uninstall KEDA
 ```
 func kubernetes remove --namespace keda
 ```
