@@ -31,7 +31,7 @@ This sample goes through the basics of creating an Azure Function that triggers 
 
   We will create an Azure Event Hub using the [Azure portal](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-create), but you can also create an Event Hub using [Azure CLI](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-quickstart-cli), [Powershell](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-quickstart-powershell), or an [Azure Resource Manager template](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-resource-manager-namespace-event-hub). 
  
-  Go to Event Hubs in the [Azure Portal]() and click on new. Fill in a name for your Event Hub namespace, your Azure subscription, your resource group, and which location you'd like your Event Hub to be deployed to. Click `Create` and wait for your Event Hub to be deployed. 
+  Go to Event Hubs in the [Azure Portal](portal.azure.com/) and click on new. Fill in a name for your Event Hub namespace, your Azure subscription, your resource group, and which location you'd like your Event Hub to be deployed to. Click `Create` and wait for your Event Hub to be deployed. 
   
   ![Where to create event hub namespace in portal](/docs/CreateNamespace.png)
   ![Creating event hub namespace from portal](/docs/CreateNamespace2.png)
@@ -43,7 +43,7 @@ This sample goes through the basics of creating an Azure Function that triggers 
   
  **5. Create an Azure Storage Account**
  
-  Functions is built on top of an __event processor host (EPH)__, an intelligent consumer agent that simplifies the management of checkpointing, leasing, and parallel event readers. To use the EPH, you must have an Azure Storage Account set up to store checkpointing and leasing information. As of now, the Event Hub scaler **only** supports reading from Blob Storage.
+  Functions is built on top of an __event processor host [(EPH)](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-event-processor-host)__, an intelligent consumer agent that simplifies the management of checkpointing, leasing, and parallel event readers. To use the EPH, you must have an Azure Storage Account set up to store checkpointing and leasing information. As of now, the Event Hub scaler **only** supports reading from Blob Storage, as well as scaling Event Hub applications created with .NET Core or Azure Functions.
   
   Click `+ Add` in Storage accounts. Fill in the same subscription and resource group that you used before, and choose a storage account name and a location. Everything else can be left as their default values. Click `Review + Create` and then `Create` again.
   
@@ -125,6 +125,7 @@ Endpoint=sb://<your-eventhub-namespace>.servicebus.windows.net/;SharedAccessKeyN
  ```
  
  **9. Debug and test the function locally (optional)**
+ 
 To test your function locally, you must create a separate program to make a producer that can send messages to your Event Hub. You can create this producer using [.NET Framework](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-dotnet-framework-getstarted-send), [Java](https://docs.microsoft.com/en-us/java/azure/spring-framework/configure-spring-cloud-stream-binder-java-app-azure-event-hub?toc=https%3A%2F%2Fdocs.microsoft.com%2Fen-us%2Fazure%2Fevent-hubs%2FTOC.json&bc=https%3A%2F%2Fdocs.microsoft.com%2Fen-us%2Fazure%2Fbread%2Ftoc.json&view=azure-java-stable), [Python](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-python-get-started-send?view=azure-java-stable), [Node.js](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-node-get-started-send?view=azure-java-stable), [Go](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-go-get-started-send?view=azure-java-stable), and [C](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-c-getstarted-send?view=azure-java-stable). Two code examples of Event Hub producers written in Go and C# are included in the eventhub-producer directory in this repository. 
 
 First, run `func start` to start your function locally. Send messages to your Event Hub using your producer, and you should see your function running locally fired immediately like below: 
@@ -225,7 +226,7 @@ kubectl delete ScaledObject sample-eventhub
 kubectl delete Secret sample-eventhub
 ```
 
-#### Delete the function deployment on Virtual Nodes
+#### Delete the function deployment (Virtual Nodes)
 ```
 kubectl delete -f deploy.yaml
 ```
