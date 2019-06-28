@@ -64,6 +64,7 @@ Endpoint=sb://<your-eventhub-namespace>.servicebus.windows.net/;SharedAccessKeyN
   
   To get the connection string of your Storage Account, go to your Storage Account and click on `Access keys` under Settings. From there, copy the connection string under **key1** and set this to the side too.
   
+  ![Getting storage connection string from portal](docs/GetStorageConnectionString.png)
   
 **7. Updating function metadata with Event Hub and Storage account information**
 
