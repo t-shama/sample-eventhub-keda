@@ -53,7 +53,7 @@ This sample goes through the basics of creating an Azure Function that triggers 
   
  **6. Getting connection strings for Event Hub and Storage Accounts**
  
-  To [get the connection string of your Event Hub](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-get-connection-string), go to your Event Hub namespace in the Azure Portal, click on `Shared access policies` under Settings. From there, click on `RootManageSharedAccessKey` and copy the value under `Connection string--primary key`. 
+  To [get the connection string of your Event Hub](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-get-connection-string), go to your Event Hub namespace in the Azure Portal and click on `Shared access policies` under Settings. From there, click on `RootManageSharedAccessKey` and copy the value under `Connection string--primary key`. 
   
   ![Getting event hub connection string from portal](docs/GetEventHubConnectionString.PNG)
   
@@ -144,19 +144,24 @@ You can then deploy your function to Kubernetes. If you want to deploy so that t
 ```
 func kubernetes deploy --name sample-eventhub --registry <docker-user-id>
 ```
-...**Note:** If you want your deployment to pull from a private Docker repository/registry, you must first [follow these steps](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/) and run `func kubernetes deploy --name sample-eventhub --registry <docker-user-id> --pull-secret <pull-secret-name>` instead.
+
+**Note:** If you want your deployment to pull from a private Docker repository/registry, you must first [follow these steps](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/) and run the following command instead: 
+```
+func kubernetes deploy --name sample-eventhub --registry <docker-user-id> --pull-secret <pull-secret-name> 
+```
 
 
 **[11b. Deploy Function app to KEDA (Virtual Nodes)](#deploy-virtual-nodes)**
 
-To deploy your function Kubernetes with Azure Virtual Nodes, you need to modify the details of the deployment to allow the selection of virtual nodes.
-
-Generate a deployment yaml for the function.
+To deploy your function Kubernetes with Azure Virtual Nodes, you need to modify the details of the deployment to allow the selection of virtual nodes. Generate a deployment yaml for the function.
 ```
 func kubernetes deploy --name sample-eventhub --registry <docker-user-id> --javascript --dry-run > deploy.yaml
 ```
 
-...**Note:** If you want your deployment to pull from a private Docker repository/registry, you must first [follow these steps](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/) and run `func kubernetes deploy --name sample-eventhub --registry <docker-user-id> --javascript --dry-run --pull-secret <pull-secret-name> > deploy.yaml` instead.
+**Note:** If you want your deployment to pull from a private Docker repository/registry, you must first [follow these steps](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/) and run the following command instead: 
+```
+func kubernetes deploy --name sample-eventhub --registry <docker-user-id> --javascript --dry-run --pull-secret <pull-secret-name> > deploy.yaml
+```
 
 Open the created `deploy.yaml`. To tolerate scheduling onto any nodes, including virtual, modify the deployment in the file.
 ```yaml
@@ -203,19 +208,19 @@ The events sent to the Event Hub will be consumed by your Functions app running 
 
 ## Cleaning Up Resources
 
-### Delete the function deployment (standard)
+#### Delete the function deployment (standard)
 ```
 kubectl delete deploy sample-eventhub
 kubectl delete ScaledObject sample-eventhub
 kubectl delete Secret sample-eventhub
 ```
 
-### Delete the function deployment on Virtual Nodes
+#### Delete the function deployment on Virtual Nodes
 ```
 kubectl delete -f deploy.yaml
 ```
 
-### Uninstall KEDA
+#### Uninstall KEDA
 ```
 func kubernetes remove --namespace keda
 ```
