@@ -125,7 +125,17 @@ Endpoint=sb://<your-eventhub-namespace>.servicebus.windows.net/;SharedAccessKeyN
  ```
  
  **9. Debug and test the function locally (optional)**
-  will insert more later on>
+To test your function locally, you must create a separate program to make a producer that can send messages to your Event Hub. You can create this producer using [.NET Framework](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-dotnet-framework-getstarted-send), [Java](https://docs.microsoft.com/en-us/java/azure/spring-framework/configure-spring-cloud-stream-binder-java-app-azure-event-hub?toc=https%3A%2F%2Fdocs.microsoft.com%2Fen-us%2Fazure%2Fevent-hubs%2FTOC.json&bc=https%3A%2F%2Fdocs.microsoft.com%2Fen-us%2Fazure%2Fbread%2Ftoc.json&view=azure-java-stable), Python (https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-python-get-started-send?view=azure-java-stable), [Node.js](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-node-get-started-send?view=azure-java-stable), [Go](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-go-get-started-send?view=azure-java-stable), and [C](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-c-getstarted-send?view=azure-java-stable). Two code examples of Event Hub producers written in Go and C# are included in the eventhub-producer directory in this repository. 
+
+First, run `func start` to start your function locally. Send messages to your Event Hub using your producer, and you should see your function running locally fired correctly immediately like below: 
+```
+[6/28/2019 8:05:10 PM] Executing 'Functions.EventHubTrigger' (Reason='', Id=86310295-c8b6-4765-adde-c8bb5ab44ec4)
+[6/28/2019 8:05:10 PM] JavaScript eventhub trigger function called for message array 0
+[6/28/2019 8:05:10 PM] Processed message 0
+[6/28/2019 8:05:10 PM] Executed 'Functions.EventHubTrigger' (Succeeded, Id=c3055566-8adb-485c-ab70-87ad02005293)
+[6/28/2019 8:05:10 PM] JavaScript eventhub trigger function called for message array 1
+[6/28/2019 8:05:10 PM] Processed message 1
+```
 
 **10. Install KEDA**
 ```
