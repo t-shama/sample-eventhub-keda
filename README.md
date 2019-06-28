@@ -125,7 +125,7 @@ Endpoint=sb://<your-eventhub-namespace>.servicebus.windows.net/;SharedAccessKeyN
  ```
  
  **9. Debug and test the function locally (optional)**
-To test your function locally, you must create a separate program to make a producer that can send messages to your Event Hub. You can create this producer using [.NET Framework](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-dotnet-framework-getstarted-send), [Java](https://docs.microsoft.com/en-us/java/azure/spring-framework/configure-spring-cloud-stream-binder-java-app-azure-event-hub?toc=https%3A%2F%2Fdocs.microsoft.com%2Fen-us%2Fazure%2Fevent-hubs%2FTOC.json&bc=https%3A%2F%2Fdocs.microsoft.com%2Fen-us%2Fazure%2Fbread%2Ftoc.json&view=azure-java-stable), Python (https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-python-get-started-send?view=azure-java-stable), [Node.js](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-node-get-started-send?view=azure-java-stable), [Go](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-go-get-started-send?view=azure-java-stable), and [C](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-c-getstarted-send?view=azure-java-stable). Two code examples of Event Hub producers written in Go and C# are included in the eventhub-producer directory in this repository. 
+To test your function locally, you must create a separate program to make a producer that can send messages to your Event Hub. You can create this producer using [.NET Framework](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-dotnet-framework-getstarted-send), [Java](https://docs.microsoft.com/en-us/java/azure/spring-framework/configure-spring-cloud-stream-binder-java-app-azure-event-hub?toc=https%3A%2F%2Fdocs.microsoft.com%2Fen-us%2Fazure%2Fevent-hubs%2FTOC.json&bc=https%3A%2F%2Fdocs.microsoft.com%2Fen-us%2Fazure%2Fbread%2Ftoc.json&view=azure-java-stable), [Python](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-python-get-started-send?view=azure-java-stable), [Node.js](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-node-get-started-send?view=azure-java-stable), [Go](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-go-get-started-send?view=azure-java-stable), and [C](https://docs.microsoft.com/en-us/azure/event-hubs/event-hubs-c-getstarted-send?view=azure-java-stable). Two code examples of Event Hub producers written in Go and C# are included in the eventhub-producer directory in this repository. 
 
 First, run `func start` to start your function locally. Send messages to your Event Hub using your producer, and you should see your function running locally fired correctly immediately like below: 
 ```
@@ -150,7 +150,7 @@ scaledobjects.keda.k8s.io   2h
 ```
 
 **11a. Deploy Function app to KEDA (standard)**
-You can then deploy your function to Kubernetes. If you want to deploy so that the function may run on Virtual Nodes, [follow 11b](#deploy-virtual-nodes). 
+You can then deploy your function to Kubernetes. If you want to deploy so that the function may run on Virtual Nodes, follow 11b.
 ```
 func kubernetes deploy --name sample-eventhub --registry <docker-user-id>
 ```
@@ -161,7 +161,7 @@ func kubernetes deploy --name sample-eventhub --registry <docker-user-id> --pull
 ```
 
 
-**[11b. Deploy Function app to KEDA (Virtual Nodes)](#deploy-virtual-nodes)**
+**11b. Deploy Function app to KEDA (Virtual Nodes)**
 
 To deploy your function Kubernetes with Azure Virtual Nodes, you need to modify the details of the deployment to allow the selection of virtual nodes. Generate a deployment yaml for the function.
 ```
