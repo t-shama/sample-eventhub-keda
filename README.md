@@ -144,6 +144,8 @@ You can then deploy your function to Kubernetes. If you want to deploy so that t
 ```
 func kubernetes deploy --name sample-eventhub --registry <docker-user-id>
 ```
+...**Note:** If you want your deployment to pull from a private Docker repository/registry, you must first [follow these steps](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/) and run `func kubernetes deploy --name sample-eventhub --registry <docker-user-id> --pull-secret <pull-secret-name>` instead.
+
 
 **[11b. Deploy Function app to KEDA (Virtual Nodes)](#deploy-virtual-nodes)**
 
@@ -153,6 +155,8 @@ Generate a deployment yaml for the function.
 ```
 func kubernetes deploy --name sample-eventhub --registry <docker-user-id> --javascript --dry-run > deploy.yaml
 ```
+
+...**Note:** If you want your deployment to pull from a private Docker repository/registry, you must first [follow these steps](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/) and run `func kubernetes deploy --name sample-eventhub --registry <docker-user-id> --javascript --dry-run --pull-secret <pull-secret-name> > deploy.yaml` instead.
 
 Open the created `deploy.yaml`. To tolerate scheduling onto any nodes, including virtual, modify the deployment in the file.
 ```yaml
@@ -166,6 +170,8 @@ Open the created `deploy.yaml`. To tolerate scheduling onto any nodes, including
         envFrom:
         - secretRef:
             name: sample-eventhub
+      imagePullSecrets:           # only needed if you are pulling from a
+      - name: <pull-secret-name>  # private Docker repository/registry
 ```
 
 Build and deploy the container image, and apply the deployment to your cluster.
